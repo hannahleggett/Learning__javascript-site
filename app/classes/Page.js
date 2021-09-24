@@ -5,6 +5,9 @@ import Prefix from 'prefix'
 import each from 'lodash/each'
 import map from 'lodash/map'
 
+import Highlight from 'animations/Highlight'
+import Label from 'animations/Label'
+import Paragraph from 'animations/Paragraph'
 import Title from 'animations/Title'
 
 export default class Page {
@@ -16,6 +19,10 @@ export default class Page {
     this.selector = element
     this.selectorChildren = {
       ...elements,
+
+      animationsHighlights: '[data-animation="highlight"]',
+      animationsLabels: '[data-animation="label"]',
+      animationsParagraphs: '[data-animation="paragraph"]',
       animationsTitles: '[data-animation="title"]'
     }
 
@@ -57,12 +64,35 @@ export default class Page {
   }
 
   createAnimations () {
-    console.log(this.elements.animationsTitles)
+    this.animations = []
 
+    // Titles.
     this.animationsTitles = map(this.elements.animationsTitles, element => {
       return new Title({ element })
     })
-    console.log(this.animationsTitles)
+
+    this.animations.push(...this.animationsTitles)
+
+    // Paragraphs.
+    this.animationsParagraphs = map(this.elements.animationsParagraphs, element => {
+      return new Paragraph({ element })
+    })
+
+    this.animations.push(...this.animationsParagraphs)
+
+    // Labels.
+    this.animationsLabels = map(this.elements.animationsLabels, element => {
+      return new Label({ element })
+    })
+
+    this.animations.push(...this.animationsLabels)
+
+    // Highlights.
+    this.animationsHighlights = map(this.elements.animationsHighlights, element => {
+      return new Highlight({ element })
+    })
+
+    this.animations.push(...this.animationsHighlights)
   }
 
   show () {
@@ -106,6 +136,8 @@ export default class Page {
     if (this.elements.wrapper) {
       this.scroll.limit = this.elements.wrapper.clientHeight - window.innerHeight
     }
+
+    each(this.animations, animation => animation.onResize())
   }
 
   update () {
