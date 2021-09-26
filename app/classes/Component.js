@@ -1,3 +1,4 @@
+import AutoBind from 'auto-bind'
 import EventEmitter from 'events'
 
 import each from 'lodash/each'
@@ -8,6 +9,8 @@ export default class Component extends EventEmitter {
     elements
   }) {
     super()
+
+    AutoBind(this)
 
     this.selector = element
     this.selectorChildren = {
@@ -28,9 +31,7 @@ export default class Component extends EventEmitter {
     this.elements = {}
 
     each(this.selectorChildren, (entry, key) => {
-      if (entry instanceof window.HTMLElement || entry instanceof window.NodeList) {
-        this.elements[key] = entry
-      } else if (Array.isArray(entry)) {
+      if (entry instanceof window.HTMLElement || entry instanceof window.NodeList || Array.isArray(entry)) {
         this.elements[key] = entry
       } else {
         this.elements[key] = document.querySelectorAll(entry)

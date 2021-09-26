@@ -13,7 +13,7 @@ export default class Animation extends Component {
   }
 
   createObserver () {
-    this.observer = new window.IntersectionObserver((entries) => {
+    this.observer = new window.IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (!this.isVisible && entry.isIntersecting) {
           this.animateIn()

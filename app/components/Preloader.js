@@ -19,10 +19,12 @@ export default class Preloader extends Component {
     })
 
     split({
+      append: true,
       element: this.elements.title,
       expression: '<br>'
     })
     split({
+      append: false,
       element: this.elements.title,
       expression: '<br>'
     })

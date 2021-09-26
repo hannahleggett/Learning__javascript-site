@@ -1,7 +1,8 @@
 /* eslint-disable no-new */
 import { each } from 'lodash'
 
-import Preloader from './components/Preloader'
+import Navigation from 'components/Navigation'
+import Preloader from 'components/Preloader'
 
 import About from 'pages/About'
 import Collections from 'pages/Collections'
@@ -10,16 +11,22 @@ import Home from 'pages/Home'
 
 class App {
   constructor () {
-    this.createPreloader()
     this.createContent()
+
+    this.createPreloader()
+    this.createNavigation()
     this.createPages()
 
     this.addEventListeners()
     this.addLinkListeners()
 
-    this.onResize()
-
     this.update()
+  }
+
+  createNavigation () {
+    this.navigation = new Navigation({
+      template: this.template
+    })
   }
 
   createPreloader () {
@@ -56,8 +63,15 @@ class App {
     this.page.show()
   }
 
-  async onChange (url) {
-    this.page.hide()
+  onPopState () {
+    this.onChange({
+      url: window.location.pathname,
+      push: false
+    })
+  }
+
+  async onChange ({ url, push = true }) {
+    await this.page.hide()
 
     const request = await window.fetch(url)
 
@@ -65,20 +79,28 @@ class App {
       const html = await request.text()
       const div = document.createElement('div')
 
+      if (push) {
+        window.history.pushState({}, '', url)
+      }
+
       div.innerHTML = html
 
       const divContent = div.querySelector('.content')
 
       this.template = divContent.getAttribute('data-template')
+      this.background = divContent.getAttribute('data-background')
+      this.color = divContent.getAttribute('data-color')
+
+      this.navigation.onChange(this.template)
 
       this.content.setAttribute('data-template', this.template)
       this.content.innerHTML = divContent.innerHTML
 
       this.page = this.pages[this.template]
+      this.page.create()
 
       this.onResize()
 
-      this.page.create()
       this.page.show()
 
       this.addLinkListeners()
@@ -103,11 +125,13 @@ class App {
 
     this.frame = window.requestAnimationFrame(this.update.bind(this))
   }
+
   /**
    * Listeners.
    */
-
   addEventListeners () {
+    window.addEventListener('popstate', this.onPopState.bind(this))
+
     window.addEventListener('resize', this.onResize.bind(this))
   }
 
@@ -119,7 +143,7 @@ class App {
         const { href } = link
         event.preventDefault()
 
-        this.onChange(href)
+        this.onChange({ url: href })
       }
     })
   }

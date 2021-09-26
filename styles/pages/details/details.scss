@@ -40,7 +40,7 @@
 .detail__media {
   height: 78.2rem;
   position: relative;
-  visibility: hidden;
+  // visibility: hidden;
   width: 55.4rem;
 
   @include media('<phone') {

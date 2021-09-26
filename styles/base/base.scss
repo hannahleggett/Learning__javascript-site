@@ -8,8 +8,8 @@
 html {
   @extend %cover;
 
-  // background: $color-contessa;
-  background: $color-cadet-blue;
+  background: $color-contessa;
+  // background: $color-cadet-blue;
   color: $color-quarter-spanish-white;
   font-size: calc(100vw / 1920 * 10);
   line-height: 1;
@@ -49,15 +49,15 @@ button {
   outline: none;
 }
 
-// img {
-//   opacity: 0;
-//   transition: opacity 0.4s ease;
-//   vertical-align: middle;
+img {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  vertical-align: middle;
 
-//   &.loaded {
-//     opacity: 1;
-//   }
-// }
+  &.loaded {
+    opacity: 1;
+  }
+}
 
 .content {
   @extend %cover;
